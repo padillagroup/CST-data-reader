@@ -1,5 +1,5 @@
 # CST-data-reader
-python-based script for importing CST data files.
+python script for importing and exporting CST data files.
 
 CST datas files with multiple curves are a pain because headers are 
 added at different points throughout the file. This code imports such 
