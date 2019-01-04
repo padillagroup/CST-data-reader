@@ -1,0 +1,9 @@
+# pycharm idea files
+.idea*
+
+# output data curves
+curve0.txt
+curve1.txt
+curve2.txt
+curve3.txt
+
