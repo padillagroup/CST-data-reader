@@ -7,11 +7,12 @@ import re
 import pandas as pd
 
 
-def impExp(filename, # name of CST exported file to be re-organized
+def impExp(inputFilename, # name of CST exported file to be re-organized
+           outputFilename, # name for exported file
            multOut: bool=True # toggle whether to separate into multiple output files or use a single file
            ):
     #import the file
-    dataIn = pd.read_csv(filename, sep='                   ', names=['Frequency', 'Value'])
+    dataIn = pd.read_csv(inputFilename, sep='                   ', names=['Frequency', 'Value'])
 
     # search the first row for the frequency unit; assume all curves use the same frequency unit
     freqUnit = re.findall(r'\/ [a-zA-Z]*', str(dataIn.iloc[0]))[0][2:]
@@ -37,7 +38,7 @@ def impExp(filename, # name of CST exported file to be re-organized
         # export the curves to separate csv files
         for counter, exportRowIndex in enumerate(exportRowIndices):
             dataToExport = dataIn.iloc[exportRowIndex[0]:exportRowIndex[1]]
-            dataToExport.to_csv(path_or_buf=os.path.join(".", "curve" + str(counter) + ".csv"),
+            dataToExport.to_csv(path_or_buf=os.path.join(".", "outputFilename" + str(counter) + ".csv"),
                                 index=False)
     else:
         # export the curves to the same csv file
@@ -52,7 +53,7 @@ def impExp(filename, # name of CST exported file to be re-organized
         # construct a df from the frequencies and data
         dataToExport = pd.DataFrame(
             data=justCurves)
-        dataToExport.to_csv(path_or_buf=os.path.join(".", "allCurves.csv"), index=False)
+        dataToExport.to_csv(path_or_buf=os.path.join(".", outputFilename + ".csv"), index=False)
 
 
 # test the function
