@@ -55,13 +55,10 @@ def impExp(filename, # name of CST exported file to be re-organized
         dataToExport.to_csv(path_or_buf=os.path.join(".", "allCurves.csv"), index=False)
 
 
-
-
-
 # test the function
 if __name__ =='__main__':
-    print("file called as main, running test for multToggle=False...")
+    print("file called as main, running test for multOut=False...")
     impExp(filename='ARmodBuffScaleCurves.txt', multOut=False)
-    print("file called as main, running test for multToggle=True...")
+    print("file called as main, running test for multOut=True...")
     impExp(filename='ARmodBuffScaleCurves.txt', multOut=True)
     print("done")
