@@ -1,3 +1,6 @@
+import sys
+print(sys.executable)
+print(sys.version)
 import numpy as np
 import re
 import pandas as pd
@@ -23,10 +26,10 @@ ends = np.append(
 
 # put the starts and ends together
 exportRowIndices = []
-for i in range(len(starts)):
-    exportRowIndices.append([starts[i], ends[i]])
+for start, end in zip(starts, ends):
+    exportRowIndices.append([start, end])
 
 # export the curves to separate csv files
-for i in range(len(exportRowIndices)):
-    dataToExport = dataIn.iloc[exportRowIndices[i][0]:exportRowIndices[i][1]]
-    dataToExport.to_csv(path_or_buf='.\curve' + str(i) + '.csv', index=False)
+for counter, exportRowIndex in enumerate(exportRowIndices):
+    dataToExport = dataIn.iloc[exportRowIndex[0]:exportRowIndex[1]]
+    dataToExport.to_csv(path_or_buf='.\curve' + str(counter) + '.csv', index=False)
