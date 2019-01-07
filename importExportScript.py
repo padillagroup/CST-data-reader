@@ -1,4 +1,5 @@
 import sys
+import os
 print(sys.executable)
 print(sys.version)
 import numpy as np
@@ -7,7 +8,7 @@ import pandas as pd
 
 
 def impExp(filename, # name of CST exported file to be re-organized
-           multToggle # toggle whether to separate into multiple output files or use a single file
+           multOut: bool=True # toggle whether to separate into multiple output files or use a single file
            ):
     #import the file
     dataIn = pd.read_csv(filename, sep='                   ', names=['Frequency', 'Value'])
@@ -32,15 +33,35 @@ def impExp(filename, # name of CST exported file to be re-organized
     for start, end in zip(starts, ends):
         exportRowIndices.append([start, end])
 
-    # export the curves to separate csv files
-    for counter, exportRowIndex in enumerate(exportRowIndices):
-        dataToExport = dataIn.iloc[exportRowIndex[0]:exportRowIndex[1]]
-        dataToExport.to_csv(path_or_buf='.\curve' + str(counter) + '.csv', index=False)
+    if(multOut==True):
+        # export the curves to separate csv files
+        for counter, exportRowIndex in enumerate(exportRowIndices):
+            dataToExport = dataIn.iloc[exportRowIndex[0]:exportRowIndex[1]]
+            dataToExport.to_csv(path_or_buf=os.path.join(".", "curve" + str(counter) + ".csv"),
+                                index=False)
+    else:
+        # export the curves to the same csv file
+        # get just the frequencies
+        freqs = dataIn.iloc[exportRowIndices[0][0]:exportRowIndices[0][1], :1].values
+        # flatten the list since pandas is dumb
+        freqs = [item for sublist in freqs for item in sublist]
+
+        # get just the curve data
+        justCurves = np.array([dataIn.iloc[exportRowIndex[0]+1:exportRowIndex[1], 1] for exportRowIndex in exportRowIndices])
+        # flatten the list since pandas is dumb
+        # construct a df from the frequencies and data
+        dataToExport = pd.DataFrame(
+            data=justCurves)
+        dataToExport.to_csv(path_or_buf=os.path.join(".", "allCurves.csv"), index=False)
+
+
+
+
 
 # test the function
 if __name__ =='__main__':
     print("file called as main, running test for multToggle=False...")
-    impExp(filename='ARmodBuffScaleCurves.txt', multToggle=False)
+    impExp(filename='ARmodBuffScaleCurves.txt', multOut=False)
     print("file called as main, running test for multToggle=True...")
-    impExp(filename='ARmodBuffScaleCurves.txt', multToggle=True)
+    impExp(filename='ARmodBuffScaleCurves.txt', multOut=True)
     print("done")
