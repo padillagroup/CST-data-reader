@@ -6,7 +6,6 @@ import numpy as np
 import re
 import pandas as pd
 
-
 def impExp(inputFilename, # name of CST exported file to be re-organized
            outputFilename, # name for exported file
            multOut: bool=True # toggle whether to separate into multiple output files or use a single file
@@ -38,7 +37,7 @@ def impExp(inputFilename, # name of CST exported file to be re-organized
         # export the curves to separate csv files
         for counter, exportRowIndex in enumerate(exportRowIndices):
             dataToExport = dataIn.iloc[exportRowIndex[0]:exportRowIndex[1]]
-            dataToExport.to_csv(path_or_buf=os.path.join(".", "outputFilename" + str(counter) + ".csv"),
+            dataToExport.to_csv(path_or_buf=os.path.join(".", outputFilename + str(counter) + ".csv"),
                                 index=False)
     else:
         # export the curves to the same csv file
@@ -59,7 +58,7 @@ def impExp(inputFilename, # name of CST exported file to be re-organized
 # test the function
 if __name__ =='__main__':
     print("file called as main, running test for multOut=False...")
-    impExp(filename='ARmodBuffScaleCurves.txt', multOut=False)
+    impExp(inputFilename='ARmodBuffScaleCurves.txt', outputFilename="allCurves", multOut=False)
     print("file called as main, running test for multOut=True...")
-    impExp(filename='ARmodBuffScaleCurves.txt', multOut=True)
+    impExp(inputFilename='ARmodBuffScaleCurves.txt', outputFilename="curve", multOut=True)
     print("done")
