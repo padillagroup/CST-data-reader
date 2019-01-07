@@ -14,7 +14,13 @@ def impExp(inputFilename, # name of CST exported file to be re-organized
     dataIn = pd.read_csv(inputFilename, sep='                   ', names=['Frequency', 'Value'])
 
     # search the first row for the frequency unit; assume all curves use the same frequency unit
-    freqUnit = re.findall(r'\/ [a-zA-Z]*', str(dataIn.iloc[0]))[0][2:]
+    freqUnit = re.findall(r'\/ [a-zA-Z]*', str(dataIn.iloc[0]))
+    if len(freqUnit)!=0:
+        freqUnit= freqUnit[0][2:]
+    else:
+        print("Warning: frequency unit could not be located, probably CST was too dumb to figure out the unit during"
+              " template based post-processing")
+        freqUnit="N/A"
     # update stored dataframe to have frequency unit in its header
     dataIn.columns = ['Frequency (' + freqUnit + ')', 'Value']
     # note the separator argument may be different in a different version of CST
@@ -57,8 +63,15 @@ def impExp(inputFilename, # name of CST exported file to be re-organized
 
 # test the function
 if __name__ =='__main__':
-    print("file called as main, running test for multOut=False...")
-    impExp(inputFilename='ARmodBuffScaleCurves.txt', outputFilename="allCurves", multOut=False)
-    print("file called as main, running test for multOut=True...")
-    impExp(inputFilename='ARmodBuffScaleCurves.txt', outputFilename="curve", multOut=True)
+    # print("file called as main, running test for multOut=False...")
+    # impExp(inputFilename='ARmodBuffScaleCurves.txt',
+    #        outputFilename="allCurves",
+    #        multOut=False)
+    # print("file called as main, running test for multOut=True...")
+    # impExp(inputFilename='ARmodBuffScaleCurves.txt',
+    #        outputFilename="curve",
+    #        multOut=True)
     print("done")
+    impExp(inputFilename=os.path.join('.', 'tests', 'bp_2.txt'),
+           outputFilename=os.path.join('.', 'tests', 'bp_2re'),
+           multOut=False)
