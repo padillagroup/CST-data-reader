@@ -3,6 +3,7 @@
 .idea*
 
 # output data curves
+allCurves.csv
 curve0.csv
 curve1.csv
 curve2.csv
