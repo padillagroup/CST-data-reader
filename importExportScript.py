@@ -77,7 +77,6 @@ def impExp(inputFilename, # name of CST exported file to be re-organized
             columns=freqs)
         dataToExport.to_csv(path_or_buf=os.path.join(".", outputFilename + ".csv"), index=False)
 
-
 # test the function
 if __name__ =='__main__':
     # print("file called as main, running test for multOut=False...")
