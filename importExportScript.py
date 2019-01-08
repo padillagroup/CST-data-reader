@@ -47,17 +47,34 @@ def impExp(inputFilename, # name of CST exported file to be re-organized
                                 index=False)
     else:
         # export the curves to the same csv file
-        # get just the frequencies
-        freqs = dataIn.iloc[exportRowIndices[0][0]:exportRowIndices[0][1], :1].values
-        # flatten the list since pandas is dumb
-        freqs = [item for sublist in freqs for item in sublist]
 
         # get just the curve data
-        justCurves = np.array([dataIn.iloc[exportRowIndex[0]+1:exportRowIndex[1], 1] for exportRowIndex in exportRowIndices])
-        # flatten the list since pandas is dumb
+        justCurves = []
+        for exportRowIndex in exportRowIndices:
+            newCurve= dataIn.iloc[exportRowIndex[0]:exportRowIndex[1], 1].values
+            print(np.shape(newCurve))
+            justCurves.append(newCurve)
+
+        # since CST is dumb and sometimes exports curves of different lengths even for the same param sweep, we have to
+        # double check our output and pare down the curves that are longer
+        # this introduces slight error since the frequencies for each point no longer necessarily match up nicely
+        curveLengths = [len(curve) for curve in justCurves]
+        minCurveLength = np.min(curveLengths)
+        justCurvesPared = []
+        for curve in justCurves:
+            justCurvesPared.append(curve[:minCurveLength])
+        justCurvesPared = np.array(justCurvesPared)
+
+        # get just the frequencies
+        freqs = dataIn.iloc[exportRowIndices[0][0]:exportRowIndices[0][1], :1].values
+        # flatten the list since pandas is dumb, also take only enough frequencies to match the number of points in the
+        # curves
+        freqs = [item for sublist in freqs for item in sublist][:minCurveLength]
+
         # construct a df from the frequencies and data
         dataToExport = pd.DataFrame(
-            data=justCurves)
+            data=justCurvesPared,
+            columns=freqs)
         dataToExport.to_csv(path_or_buf=os.path.join(".", outputFilename + ".csv"), index=False)
 
 
