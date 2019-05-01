@@ -11,7 +11,7 @@ def impExp(inputFilename, # name of CST exported file to be re-organized
            multOut: bool=True # toggle whether to separate into multiple output files or use a single file
            ):
     #import the file
-    dataIn = pd.read_csv(inputFilename, sep='                   ', names=['Frequency', 'Value'])
+    dataIn = pd.read_csv(inputFilename, sep='                ', names=['Frequency', 'Value'])
 
     # search the first row for the frequency unit; assume all curves use the same frequency unit
     freqUnit = re.findall(r'\/ [a-zA-Z]*', str(dataIn.iloc[0]))
@@ -29,9 +29,9 @@ def impExp(inputFilename, # name of CST exported file to be re-organized
     headerData = dataIn[dataIn.isnull().any(axis=1)]
 
     # define the beginnings and endings of row sets to export
-    starts = np.array(headerData.index.values)[1::2] + 1
+    starts = np.array(headerData.index.values) + 1
     ends = np.append(
-        np.array(headerData.index.values)[2::2],
+        np.array(headerData.index.values)[1:] -1,
         dataIn.shape[0])
 
     # put the starts and ends together
@@ -52,7 +52,7 @@ def impExp(inputFilename, # name of CST exported file to be re-organized
         justCurves = []
         for exportRowIndex in exportRowIndices:
             newCurve= dataIn.iloc[exportRowIndex[0]:exportRowIndex[1], 1].values
-            print(np.shape(newCurve))
+            # print(np.shape(newCurve))
             justCurves.append(newCurve)
 
         # since CST is dumb and sometimes exports curves of different lengths even for the same param sweep, we have to
@@ -75,7 +75,7 @@ def impExp(inputFilename, # name of CST exported file to be re-organized
         dataToExport = pd.DataFrame(
             data=justCurvesPared,
             columns=freqs)
-        dataToExport.to_csv(path_or_buf=os.path.join(".", outputFilename + ".csv"), index=False)
+        dataToExport.to_csv(path_or_buf=outputFilename, index=False)
 
 # test the function
 if __name__ =='__main__':
@@ -88,6 +88,6 @@ if __name__ =='__main__':
     #        outputFilename="curve",
     #        multOut=True)
     print("done")
-    impExp(inputFilename=os.path.join('.', 'tests', 'bp_2.txt'),
-           outputFilename=os.path.join('.', 'tests', 'bp_2re'),
+    impExp(inputFilename=os.path.join('.', 'tests', 'ARmodBuffScaleCurves.txt'),
+           outputFilename=os.path.join('.', 'tests', 'ARmodBuffScaleCurvesOut.csv'),
            multOut=False)
