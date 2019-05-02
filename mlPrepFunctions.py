@@ -31,4 +31,4 @@ if __name__ == '__main__':
 
     dataFormat(paramFilePath=os.path.join('.', 'tests', 'bp_2_params.csv'),
                curveFilePath=os.path.join('.', 'tests', 'bp_2re.csv'),
-               outputFilepath='bp2_Out')
+               outputFilepath=os.path.join('.', 'tests', 'bp2_Out.csv'))
